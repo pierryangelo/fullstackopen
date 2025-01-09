@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const NextAnecdoteButton = ({ handleClick, text }) => {
+const NextAnecdoteButton = ({handleClick, text}) => {
   return (
     <>
       <button onClick={handleClick}>{text}</button>
@@ -8,7 +8,7 @@ const NextAnecdoteButton = ({ handleClick, text }) => {
   );
 };
 
-const VoteButton = ({handleVote, anecdoteIndex}) => {
+const VoteButton = ({handleVote}) => {
   return (
     <>
       <button onClick={handleVote}>vote</button>
@@ -20,15 +20,14 @@ const DisplayVotes = ({votes}) => {
   if (votes === undefined) {
     return (
       <>
-      <p>
-        There are no votes for this anecdote.
-      </p>
+        <p>There are no votes for this anecdote.</p>
       </>
     )
   }
+
   return (
     <>
-      <p>votes {votes}</p>
+      <p>has {votes} votes</p>
     </>
   )
 }
@@ -68,10 +67,10 @@ const App = () => {
 
   const handleVote = () => {
     if (!votes[selected]) {
-      setVotes({...votes, selected: 1})
+      setVotes({...votes, [selected]: 1})
     }
     else {
-      setVotes({...votes, selected: votes[selected] + 1})
+      setVotes({...votes, [selected]: votes[selected] + 1})
     }
   }
 
