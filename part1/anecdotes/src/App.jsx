@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+const Title = ({title}) => {
+  return (
+    <>
+      <h1>{title}</h1>
+    </>
+  )
+}
+
 const NextAnecdoteButton = ({handleClick, text}) => {
   return (
     <>
@@ -17,16 +25,17 @@ const VoteButton = ({handleVote}) => {
 }
 
 const DisplayVotes = ({votes}) => { 
-  if (votes === undefined) {
-    return (
-      <>
-        <p>There are no votes for this anecdote.</p>
-      </>
-    )
-  }
-
   return (
     <>
+      <p>has {votes} votes</p>
+    </>
+  )
+}
+
+const MostVotesAnecdote = ({anecdote, votes}) => {
+  return (
+    <>
+      <p>{anecdote}</p>
       <p>has {votes} votes</p>
     </>
   )
@@ -59,23 +68,38 @@ const App = () => {
   };
 
   const [selected, setSelected] = useState(0);
-  const [votes, setVotes] = useState({});
+  const [votes, setVotes] = useState(() => {
+    const emptyVotesMap = {};
+    for (let i = 0; i < anecdotes.length; i++) {
+      emptyVotesMap[i] = 0;
+    }
+    return emptyVotesMap;
+  });
 
   const selectRandomAnecdote = () => {
     setSelected(getRandomInt(0, anecdotes.length - 1));
   };
 
   const handleVote = () => {
-    if (!votes[selected]) {
-      setVotes({...votes, [selected]: 1})
+    setVotes({...votes, [selected]: votes[selected] + 1})
+  }
+
+  // return the index of the winner anecdote (that one that has more votes)
+  let winner = () => {
+    let winner = null; 
+    let mostVotes = 0;
+    for (let i = 0; i < anecdotes.length; i++) {
+      if (votes[i] >= mostVotes) {
+        mostVotes = votes[i]
+        winner = i
+      }
     }
-    else {
-      setVotes({...votes, [selected]: votes[selected] + 1})
-    }
+    return winner
   }
 
   return (
     <div>
+      <Title title="Anecdote of the day" />
       <Anecdote anecdote={anecdotes[selected]} />
       <DisplayVotes votes={votes[selected]} />
       <VoteButton handleVote={handleVote} />
@@ -83,6 +107,8 @@ const App = () => {
         text="next anecdote"
         handleClick={selectRandomAnecdote}
       />
+      <Title title="Anecdote with most votes" />
+      <MostVotesAnecdote anecdote={anecdotes[winner()]} votes={votes[winner()]} />
     </div>
   );
 };
